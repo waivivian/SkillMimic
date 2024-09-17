@@ -5,11 +5,11 @@ from torch import Tensor
 from typing import Tuple
 import glob, os, random
 
-from isaacgym import gymtorch
-from isaacgym import gymapi
-from isaacgym.torch_utils import *
+#from isaacgym import gymtorch
+#from isaacgym import gymapi
+#from isaacgym.torch_utils import *
 
-from utils import torch_utils
+from skill.SkillMimiclab.skillmimic.utils import torch_utils
 
 from env.tasks.base_task import BaseTask
 from omni.isaac.lab.assets import Articulation
@@ -551,6 +551,43 @@ class HumanoidWholeBody(BaseTask):
 ###=========================jit functions=========================###
 #####################################################################
 
+################################################
+@torch.jit.script
+def quat_rotate(q, v):
+    shape = q.shape
+    q_w = q[:, -1]
+    q_vec = q[:, :3]
+    a = v * (2.0 * q_w ** 2 - 1.0).unsqueeze(-1)
+    b = torch.cross(q_vec, v, dim=-1) * q_w.unsqueeze(-1) * 2.0
+    c = q_vec * \
+        torch.bmm(q_vec.view(shape[0], 1, 3), v.view(
+            shape[0], 3, 1)).squeeze(-1) * 2.0
+    return a + b + c
+
+@torch.jit.script
+def quat_mul(a, b):
+    assert a.shape == b.shape
+    shape = a.shape
+    a = a.reshape(-1, 4)
+    b = b.reshape(-1, 4)
+
+    x1, y1, z1, w1 = a[:, 0], a[:, 1], a[:, 2], a[:, 3]
+    x2, y2, z2, w2 = b[:, 0], b[:, 1], b[:, 2], b[:, 3]
+    ww = (z1 + x1) * (x2 + y2)
+    yy = (w1 - y1) * (w2 + z2)
+    zz = (w1 + y1) * (w2 - z2)
+    xx = ww + yy + zz
+    qq = 0.5 * (xx + (z1 - x1) * (x2 - y2))
+    w = qq - ww + (z1 - y1) * (y2 - z2)
+    x = qq - xx + (x1 + w1) * (x2 + w2)
+    y = qq - yy + (w1 - x1) * (y2 + z2)
+    z = qq - zz + (z1 + y1) * (w2 - x2)
+
+    quat = torch.stack([x, y, z, w], dim=-1).view(shape)
+
+    return quat
+###############################################
+
 @torch.jit.script
 def compute_humanoid_reward(obs_buf):
     # type: (Tensor) -> Tensor
@@ -605,7 +642,6 @@ def compute_humanoid_observations(body_pos, body_rot, body_vel, body_ang_vel, lo
     obs = torch.cat((root_h_obs, local_body_pos, local_body_rot_obs, local_body_vel, local_body_ang_vel, body_contact_buf), dim=-1)
     return obs
 
-
 @torch.jit.script
 def compute_humanoid_reset(reset_buf, progress_buf, rigid_body_pos,
                            max_episode_length, enable_early_termination, termination_heights):
@@ -623,3 +659,6 @@ def compute_humanoid_reset(reset_buf, progress_buf, rigid_body_pos,
     reset = torch.where(progress_buf >= max_episode_length - 1, torch.ones_like(reset_buf), terminated)
 
     return reset, terminated
+
+
+

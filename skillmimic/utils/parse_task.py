@@ -26,14 +26,15 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from env.tasks.vec_task_wrappers import VecTaskPythonWrapper
+#from env.tasks.vec_task_wrappers import VecTaskPythonWrapper
+from omni.isaac.lab.envs import DirectRLEnvCfg
 from env.tasks.skillmimic import SkillMimicBallPlay
 from env.tasks.hrl_circling import HRLCircling
 from env.tasks.hrl_heading_easy import HRLHeadingEasy
 from env.tasks.hrl_throwing import HRLThrowing
 from env.tasks.hrl_scoring_layup import HRLScoringLayup
 
-from isaacgym import rlgpu
+#from isaacgym import rlgpu
 
 import json
 import numpy as np
@@ -54,7 +55,7 @@ def parse_task(args, cfg, cfg_train, sim_params):
     cfg_task["seed"] = cfg["seed"]
 
     try:
-        task = eval(args.task)( # to HumanoidLocation(), obs defined here!
+        task = eval(args.task)( # to HumanoidLocation(), obs defined here! #eval(args.task) = parse args.task to a class
             cfg=cfg,
             sim_params=sim_params,
             physics_engine=args.physics_engine,
@@ -64,6 +65,7 @@ def parse_task(args, cfg, cfg_train, sim_params):
     except NameError as e:
         print(e)
         warn_task_name()
-    env = VecTaskPythonWrapper(task, rl_device, cfg_train.get("clip_observations", np.inf), cfg_train.get("clip_actions", 1.0))
+    #env = VecTaskPythonWrapper(task, rl_device, cfg_train.get("clip_observations", np.inf), cfg_train.get("clip_actions", 1.0))
+    env = DirectRLEnvCfg(SkillmimicCfg, render_mode = None, **kwargs)
 
     return task, env

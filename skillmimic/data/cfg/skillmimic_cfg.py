@@ -6,7 +6,7 @@ import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import Articulation, ArticulationCfg
 
 @configclass
-class SkillmimicCfg(DirectRLEnvCfg):
+class SkillmimiceEnvCfg(DirectRLEnvCfg):
    # env
    decimation = 2 # same as substeps in issacgym
    episode_length_s = 5.0
