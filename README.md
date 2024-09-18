@@ -65,6 +65,13 @@ The skill policy can be trained purely from demonstrations, without the need for
 ### Inference
 Run the following command.
 ```
+isaaclab -p /projects/SkillMimicLab/skillmimic/run.py --test --task SkillMimicBallPlay --num_envs 16 \
+--cfg_env /projects/SkillMimicLab/skillmimic/data/cfg/skillmimic.yaml \
+--cfg_train /projects/SkillMimicLab/skillmimic/data/cfg/train/rlg/skillmimic.yaml \
+--motion_file /projects/SkillMimicLab/skillmimic/data/motions/BallPlay-M/layup \
+--checkpoint /projects/SkillMimicLab/skillmimic/data/models/mixedskills/nn/skillmimic_llc.pth
+
+
 python skillmimic/run.py --test --task SkillMimicBallPlay --num_envs 16 \
 --cfg_env skillmimic/data/cfg/skillmimic.yaml \
 --cfg_train skillmimic/data/cfg/train/rlg/skillmimic.yaml \
