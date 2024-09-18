@@ -70,14 +70,14 @@ isaaclab -p /projects/SkillMimicLab/skillmimic/run.py --test --task SkillMimicBa
 --cfg_train /projects/SkillMimicLab/skillmimic/data/cfg/train/rlg/skillmimic.yaml \
 --motion_file /projects/SkillMimicLab/skillmimic/data/motions/BallPlay-M/layup \
 --checkpoint /projects/SkillMimicLab/skillmimic/data/models/mixedskills/nn/skillmimic_llc.pth
-
+```
 
 python skillmimic/run.py --test --task SkillMimicBallPlay --num_envs 16 \
 --cfg_env skillmimic/data/cfg/skillmimic.yaml \
 --cfg_train skillmimic/data/cfg/train/rlg/skillmimic.yaml \
 --motion_file skillmimic/data/motions/BallPlay-M/layup \
 --checkpoint skillmimic/data/models/mixedskills/nn/skillmimic_llc.pth
-```
+
 - You may control the skill switching using your keyboard. By default, the key and skill correspondence are as follows:
 `Q: pick up`, `W: shot`, `←: dribble left`, `↑: dribble forward`, `→: dribble right`, `E: layup`, `R: turnaround layup`.
 - You may change `--motion_file` to alter the initialization, or add `--state_init frame_number` to initialize from a specific reference state (Default: random reference state initialization).
