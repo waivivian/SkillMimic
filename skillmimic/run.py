@@ -25,54 +25,14 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-import argparse
 
-from omni.isaac.lab.app import AppLauncher
 
-# add argparse arguments
-parser = argparse.ArgumentParser(description="Pick and lift state machine for cabinet environments.")
-parser.add_argument(
-    "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
-)
-parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
-# append AppLauncher cli args
-AppLauncher.add_app_launcher_args(parser)
-# parse the arguments
-args_cli = parser.parse_args()
-
-# launch omniverse app
-app_launcher = AppLauncher(headless=args_cli.headless)
-simulation_app = app_launcher.app
 
 import os
 cwd = os.getcwd()
 print(cwd)
 # os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
-#later just put isacclab under skillmimic
-from skill.SkillMimiclab.skillmimic.utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
-from skill.SkillMimiclab.skillmimic.utils.parse_task import parse_task
-
-from rl_games.algos_torch import players
-from rl_games.algos_torch import torch_ext
-from rl_games.common import env_configurations, experiment, vecenv
-from rl_games.common.algo_observer import AlgoObserver
-from rl_games.torch_runner import Runner
-
-import numpy as np
-import copy
-import torch
-
-from learning import skillmimic_agent
-from learning import skillmimic_players
-from learning import skillmimic_models
-from learning import skillmimic_network_builder
-# from learning import physhoi_network_builder_dual #ZC9 #V1
-
-from learning import hrl_agent_discrete #, hrl_agent, #ZC0
-from learning import hrl_players_discrete #, hrl_players, hrl_players_discrete_llcs
-from learning import hrl_models_discrete #, hrl_models, 
-from learning import hrl_network_builder 
 
 # from learning import amp_agent
 # from learning import amp_players
@@ -84,9 +44,15 @@ from learning import hrl_network_builder
 # from learning import ase_models
 # from learning import ase_network_builder
 
-args = None
-cfg = None
-cfg_train = None
+#args = None
+#cfg = None
+#cfg_train = None
+
+from rl_games.algos_torch import players
+from rl_games.algos_torch import torch_ext
+from rl_games.common import env_configurations, experiment, vecenv
+from rl_games.common.algo_observer import AlgoObserver
+from rl_games.torch_runner import Runner
 
 def create_rlgpu_env(**kwargs):
     use_horovod = cfg_train['params']['config'].get('multi_gpu', False)
@@ -209,7 +175,7 @@ env_configurations.register('rlgpu', {
 
 def build_alg_runner(algo_observer):
     runner = Runner(algo_observer)
-
+    print("hhhhhhhhhhhhhhhhhhh",runner)
     runner.algo_factory.register_builder('skillmimic', lambda **kwargs : skillmimic_agent.SkillMimicAgent(**kwargs))
     runner.player_factory.register_builder('skillmimic', lambda **kwargs : skillmimic_players.SkillMimicPlayerContinuous(**kwargs))
     runner.model_builder.model_factory.register_builder('skillmimic', lambda network, **kwargs : skillmimic_models.SkillMimicModelContinuous(network))  
@@ -237,13 +203,66 @@ def build_alg_runner(algo_observer):
  
     return runner
 
+
+
 def main():
+    import argparse
+    from projects.SkillMimicLab.skillmimic.utils.config import get_args
+    from omni.isaac.lab.app import AppLauncher
     global args
+    parser = get_args()
+
+    # add argparse arguments
+    #parser = argparse.ArgumentParser(description="Pick and lift state machine for cabinet environments.")
+    #parser.add_argument(
+    #    "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
+    #)
+    #parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
+    # append AppLauncher cli args
+    AppLauncher.add_app_launcher_args(parser)
+    # parse the arguments
+    args_cli = parser.parse_args()
+
+    # allignment with examples
+    #args_cli.device_id = args_cli.compute_device_id
+    #args_cli.device = args_cli.sim_device_type if args_cli.use_gpu_pipeline else 'cpu'
+
+    if args_cli.test:
+        args_cli.play = args_cli.test
+        args_cli.train = False
+    elif args_cli.play:
+        args_cli.train = False
+    else:
+        args_cli.train = True
+    args = args_cli
+    # launch omniverse app
+    app_launcher = AppLauncher(headless=args_cli.headless)
+    simulation_app = app_launcher.app
     global cfg
     global cfg_train
 
+#later just put isacclab under skillmimic
+    from projects.SkillMimicLab.skillmimic.utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
+    from projects.SkillMimicLab.skillmimic.utils.parse_task import parse_task
+
+
+    import numpy as np
+    import copy
+    import torch
+
+    from learning import skillmimic_agent
+    from learning import skillmimic_players
+    from learning import skillmimic_models
+    from learning import skillmimic_network_builder
+    # from learning import physhoi_network_builder_dual #ZC9 #V1
+
+    from learning import hrl_agent_discrete #, hrl_agent, #ZC0
+    from learning import hrl_players_discrete #, hrl_players, hrl_players_discrete_llcs
+    from learning import hrl_models_discrete #, hrl_models, 
+    from learning import hrl_network_builder 
+
     set_np_formatting()
-    args = get_args()
+    #args = get_args()
     cfg, cfg_train, logdir = load_cfg(args)
 
     cfg_train['params']['seed'] = set_seed(cfg_train['params'].get("seed", -1), cfg_train['params'].get("torch_deterministic", False))

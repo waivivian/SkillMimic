@@ -10,8 +10,8 @@ import glob, os, random
 
 from datetime import datetime
 
-from skill.SkillMimiclab.skillmimic.utils import torch_utils
-from skill.SkillMimiclab.skillmimic.utils.motion_data_handler import MotionDataHandler
+from projects.SkillMimicLab.skillmimic.utils import torch_utils
+from projects.SkillMimicLab.skillmimic.utils.motion_data_handler import MotionDataHandler
 
 from env.tasks.humanoid_object_task import HumanoidWholeBodyWithObject
 

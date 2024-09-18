@@ -9,7 +9,7 @@ import glob, os, random
 #from isaacgym import gymapi
 #from isaacgym.torch_utils import *
 
-from skill.SkillMimiclab.skillmimic.utils import torch_utils
+from projects.SkillMimicLab.skillmimic.utils import torch_utils
 
 from env.tasks.base_task import BaseTask
 from omni.isaac.lab.assets import Articulation

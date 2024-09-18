@@ -31,8 +31,8 @@ from torch import Tensor
 from typing import Tuple
 from enum import Enum
 
-from skill.SkillMimiclab.skillmimic.utils import torch_utils
-from skill.SkillMimiclab.skillmimic.utils.motion_data_handler import MotionDataHandler
+from projects.SkillMimicLab.skillmimic.utils import torch_utils
+from projects.SkillMimicLab.skillmimic.utils.motion_data_handler import MotionDataHandler
 
 #from isaacgym import gymapi
 #from isaacgym import gymtorch

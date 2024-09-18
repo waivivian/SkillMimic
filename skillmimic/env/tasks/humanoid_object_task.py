@@ -10,10 +10,10 @@ import glob, os, random
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import RigidObjectCfg
 
-from skill.SkillMimiclab.skillmimic.utils import torch_utils
+from projects.SkillMimicLab.skillmimic.utils import torch_utils
 
 from env.tasks.humanoid_task import HumanoidWholeBody
-from skill.SkillMimiclab.skillmimic.utils.metrics import Metrics, compute_evaluation_metrics
+from projects.SkillMimicLab.skillmimic.utils.metrics import Metrics, compute_evaluation_metrics
 
 
 PERTURB_PROJECTORS = [

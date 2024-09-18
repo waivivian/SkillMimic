@@ -5,4 +5,3 @@ rl-games==1.1.4
 tensorboard==2.13.0
 protobuf==3.20.0
 
-warp-lang

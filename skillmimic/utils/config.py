@@ -79,6 +79,7 @@ def set_seed(seed, torch_deterministic=False):
 
 
 def load_cfg(args):
+    print("lllllllllllllllllllllllllllll",args)
     with open(os.path.join(os.getcwd(), args.cfg_train), 'r') as f:
         cfg_train = yaml.load(f, Loader=yaml.SafeLoader)
 
@@ -194,8 +195,8 @@ def get_args(benchmark=False):
             "help": "Resume training or start testing from a checkpoint"},
         {"name": "--checkpoint", "type": str, "default": "Base",
             "help": "Path to the saved weights, only for rl_games RL library"},
-        {"name": "--headless", "action": "store_true", "default": False,
-            "help": "Force display off at all times"},
+        #{"name": "--headless", "action": "store_true", "default": False,
+        #    "help": "Force display off at all times"},
         {"name": "--horovod", "action": "store_true", "default": False,
             "help": "Use horovod for multi-gpu training, have effect only with rl_games RL library"},
         {"name": "--task", "type": str, "default": "Humanoid",
@@ -276,10 +277,10 @@ def get_args(benchmark=False):
         parser.add_argument(name, **param)
 
     # Parse the arguments
-    args = parser.parse_args()
+    ##args = parser.parse_args()
 
     # Example of accessing the parsed arguments
-    print(args)
+    ##print(args)
 
     #args = gymutil.parse_arguments(
     #    description="RL Policy",
@@ -288,7 +289,7 @@ def get_args(benchmark=False):
     # allignment with examples
     #args.device_id = args.compute_device_id
     #args.device = args.sim_device_type if args.use_gpu_pipeline else 'cpu'
-
+    '''
     if args.test:
         args.play = args.test
         args.train = False
@@ -296,5 +297,5 @@ def get_args(benchmark=False):
         args.train = False
     else:
         args.train = True
-
-    return args
+    '''
+    return parser
