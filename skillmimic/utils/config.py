@@ -38,6 +38,7 @@ import random
 import torch
 import argparse
 
+
 SIM_TIMESTEP = 1.0 / 60.0
 
 def set_np_formatting():
@@ -83,19 +84,23 @@ def load_cfg(args):
     with open(os.path.join(os.getcwd(), args.cfg_train), 'r') as f:
         cfg_train = yaml.load(f, Loader=yaml.SafeLoader)
 
-    with open(os.path.join(os.getcwd(), args.cfg_env), 'r') as f:
-        cfg = yaml.load(f, Loader=yaml.SafeLoader)
+    #with open(os.path.join(os.getcwd(), args.cfg_env), 'r') as f:
+    #    cfg = yaml.load(f, Loader=yaml.SafeLoader)
+    from projects.SkillMimicLab.skillmimic.data.cfg.skillmimic_cfg import SkillmimiceEnvCfg
+
+    cfg = SkillmimiceEnvCfg()
 
     # Override number of environments if passed on the command line
     if args.num_envs > 0:
-        cfg["env"]["numEnvs"] = args.num_envs
+        cfg.env["numEnvs"] = args.num_envs
 
     if args.episode_length > 0:
-        cfg["env"]["episodeLength"] = args.episode_length
+        cfg.env["episodeLength"] = args.episode_length
 
-    cfg["name"] = args.task
-    cfg["headless"] = args.headless
+    #cfg["name"] = args.task
+    #cfg["headless"] = args.headless
 
+    '''
     # Set physics domain randomization
     if "task" in cfg:
         if "randomize" not in cfg["task"]:
@@ -104,8 +109,9 @@ def load_cfg(args):
             cfg["task"]["randomize"] = args.randomize or cfg["task"]["randomize"]
     else:
         cfg["task"] = {"randomize": False}
-
+    '''
     logdir = args.logdir
+    '''
     # Set deterministic mode
     if args.torch_deterministic:
         cfg_train["params"]["torch_deterministic"] = True
@@ -123,6 +129,7 @@ def load_cfg(args):
 
     # Override config name
     cfg_train["params"]["config"]['name'] = exp_name
+    '''
 
     if args.resume > 0:
         cfg_train["params"]["load_checkpoint"] = True
@@ -137,15 +144,15 @@ def load_cfg(args):
     if args.max_iterations > 0:
         cfg_train["params"]["config"]['max_epochs'] = args.max_iterations
 
-    cfg_train["params"]["config"]["num_actors"] = cfg["env"]["numEnvs"]
+    cfg_train["params"]["config"]["num_actors"] = cfg.env["numEnvs"]
 
     seed = cfg_train["params"].get("seed", -1)
     if args.seed is not None:
         seed = args.seed
-    cfg["seed"] = seed
+    cfg.seed = seed
     cfg_train["params"]["seed"] = seed
 
-    cfg["args"] = args
+    cfg.args = args
 
     return cfg, cfg_train, logdir
 

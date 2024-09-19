@@ -12,14 +12,16 @@ from datetime import datetime
 
 from projects.SkillMimicLab.skillmimic.utils import torch_utils
 from projects.SkillMimicLab.skillmimic.utils.motion_data_handler import MotionDataHandler
+from projects.SkillMimicLab.skillmimic.data.cfg.skillmimic_cfg import SkillmimiceEnvCfg
 
 from env.tasks.humanoid_object_task import HumanoidWholeBodyWithObject
 
 
 class SkillMimicBallPlay(HumanoidWholeBodyWithObject): 
     #def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
-    def __init__(self, cfg, device_type, device_id, headless):
-        state_init = str(cfg["env"]["stateInit"])
+    def __init__(self, cfg: SkillmimiceEnvCfg, render_mode: str | None = None, **kwargs):
+        #state_init = str(cfg["env"]["stateInit"])
+        state_init = str(cfg.env["stateInit"])
         if state_init.lower() == "random":
             self._state_init = -1
             print("Random Reference State Init (RRSI)")
@@ -27,23 +29,25 @@ class SkillMimicBallPlay(HumanoidWholeBodyWithObject):
             self._state_init = int(state_init)
             print(f"Deterministic Reference State Init from {self._state_init}")
 
-        self.motion_file = cfg['env']['motion_file']
-        self.play_dataset = cfg['env']['playdataset']
-        self.robot_type = cfg["env"]["asset"]["assetFileName"]
-        self.reward_weights_default = cfg["env"]["rewardWeights"]
-        self.save_images = cfg['env']['saveImages']
+        self.motion_file = cfg.env['motion_file']
+        self.play_dataset = cfg.env['playdataset']
+        #self.robot_type = cfg.env["asset"]["assetFileName"]
+        self.reward_weights_default = cfg.env["rewardWeights"]
+        self.save_images = cfg.env['saveImages']
         self.save_images_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.init_vel = cfg['env']['initVel']
-        self.isTest = cfg['args'].test
+        self.init_vel = cfg.env['initVel']
+        self.isTest = cfg.args.test
 
         self.condition_size = 64
 
-        super().__init__(cfg=cfg,
+        super().__init__(cfg, **kwargs
+                         #cfg=cfg,
                          #sim_params=sim_params,
                          #physics_engine=physics_engine,
-                         device_type=device_type,
-                         device_id=device_id,
-                         headless=headless)
+                         #device_type=device_type,
+                         #device_id=device_id,
+                         #headless=headless
+                         )
         
         self.ref_hoi_obs_size = 323 + len(self.cfg["env"]["keyBodies"])*3 + 6 #V1
         

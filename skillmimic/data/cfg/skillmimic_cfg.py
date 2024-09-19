@@ -151,3 +151,6 @@ class SkillmimiceEnvCfg(DirectRLEnvCfg):
 
     }
     
+   args = None
+   seed = None
+    

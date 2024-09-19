@@ -78,18 +78,19 @@ def parse_task(args, cfg, cfg_train):
     try:
 
         gym.register(
-            id=args.task+"-Direct",
+            id=args.task,
             entry_point="projects.SkillMimicLab.skillmimic.env.tasks.skillmimic:"+args.task,
             disable_env_checker=True,
             kwargs={
-                "env_entry_point_cfg": SkillmimiceEnvCfg
+                "env_entry_point_cfg": cfg
             },
         )   
         
-        cfg = load_cfg_from_registry(args.task+"-Direct", "env_entry_point_cfg")
+        cfg = load_cfg_from_registry(args.task, "env_entry_point_cfg")
         #env = VecTaskPythonWrapper(task, rl_device, cfg_train.get("clip_observations", np.inf), cfg_train.get("clip_actions", 1.0))
         #env = DirectRLEnvCfg(SkillmimicCfg, render_mode = None, **kwargs)
-        env = gym.make(args.task+"-Direct", cfg=cfg)
+
+        env = gym.make(args.task, cfg=cfg)
     except NameError as e:
         print(e)
         warn_task_name()

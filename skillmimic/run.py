@@ -252,6 +252,8 @@ def main():
     # launch omniverse app
     app_launcher = AppLauncher(headless=args_cli.headless)
     simulation_app = app_launcher.app
+
+
     global cfg
     global cfg_train
 
@@ -277,43 +279,43 @@ def main():
         cfg_train['params']['config']['minibatch_size'] = args.minibatch_size
         
     if args.motion_file:
-        cfg['env']['motion_file'] = args.motion_file
+        cfg.env['motion_file'] = args.motion_file
 
     if args.play_dataset:
-        cfg['env']['playdataset'] = True
+        cfg.env['playdataset'] = True
 
     if args.projtype:
-        cfg['env']['projtype'] = args.projtype
+        cfg.env['projtype'] = args.projtype
 
     if args.cg1 != -1.:
-        cfg['env']['rewardWeights']['cg1'] = args.cg1
+        cfg.env['rewardWeights']['cg1'] = args.cg1
 
     if args.cg2 != -1.:
-        cfg['env']['rewardWeights']['cg2'] = args.cg2
+        cfg.env['rewardWeights']['cg2'] = args.cg2
 
     if args.ig != -1.:
-        cfg['env']['rewardWeights']['ig'] = args.ig
+        cfg.env['rewardWeights']['ig'] = args.ig
 
     if args.op != -1.:
-        cfg['env']['rewardWeights']['op'] = args.op
+        cfg.env['rewardWeights']['op'] = args.op
 
     if args.save_images:
-        cfg['env']['saveImages'] = args.save_images #True
+        cfg.env['saveImages'] = args.save_images #True
     
     if args.init_vel:
-        cfg['env']['initVel'] = True
+        cfg.env['initVel'] = True
 
     if args.frames_scale!= 0.:
-        cfg['env']['dataFramesScale'] = args.frames_scale
+        cfg.env['dataFramesScale'] = args.frames_scale
 
     if args.ball_size!= 0.:
-        cfg['env']['ballSize'] = args.ball_size
+        cfg.env['ballSize'] = args.ball_size
 
     if args.resume_from:
         cfg_train['params']['config']['resume_from'] = args.resume_from
 
     if args.state_init.lower() != "random":
-        cfg["env"]["stateInit"] = args.state_init
+        cfg.env["stateInit"] = args.state_init
 
     # Create default directories for weights and statistics
     cfg_train['params']['config']['train_dir'] = args.output_path

@@ -13,15 +13,19 @@ import random
 
 #from isaacgym import gymapi
 #from isaacgym.gymutil import get_property_setter_map, get_property_getter_map, get_default_setter_args, apply_random_samples, check_buckets, generate_random_samples
-
+from projects.SkillMimicLab.skillmimic.data.cfg.skillmimic_cfg import SkillmimiceEnvCfg
+from omni.isaac.lab.envs import DirectRLEnv
 import numpy as np
 import torch
 
 
 # Base class for RL tasks
-class BaseTask():
+class BaseTask(DirectRLEnv):
+    cfg: SkillmimiceEnvCfg
 
-    def __init__(self, cfg, enable_camera_sensors=False):
+    def __init__(self, cfg: SkillmimiceEnvCfg, render_mode: str | None = None, **kwargs):
+        super().__init__(cfg, render_mode, **kwargs)
+
         #self.gym = gymapi.acquire_gym()
 
         self.device_type = cfg.get("device_type", "cuda")
@@ -116,13 +120,10 @@ class BaseTask():
             return 2
         return 1
 
-    def _setup_scene(self, compute_device, graphics_device, physics_engine, sim_params):
+    def _setup_scene(self):
         #sim = self.gym.create_sim(compute_device, graphics_device, physics_engine, sim_params)
-        if sim is None:
-            print("*** Failed to create sim")
-            quit()
-
-        return sim
+        pass
+        return 
     '''
     def create_sim(self, compute_device, graphics_device, physics_engine, sim_params):
         sim = self.gym.create_sim(compute_device, graphics_device, physics_engine, sim_params)

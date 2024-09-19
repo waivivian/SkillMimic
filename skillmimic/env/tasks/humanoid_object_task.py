@@ -11,6 +11,7 @@ import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import RigidObjectCfg
 
 from projects.SkillMimicLab.skillmimic.utils import torch_utils
+from projects.SkillMimicLab.skillmimic.data.cfg.skillmimic_cfg import SkillmimiceEnvCfg
 
 from env.tasks.humanoid_task import HumanoidWholeBody
 from projects.SkillMimicLab.skillmimic.utils.metrics import Metrics, compute_evaluation_metrics
@@ -23,20 +24,22 @@ PERTURB_PROJECTORS = [
 
 class HumanoidWholeBodyWithObject(HumanoidWholeBody): #metric
     #def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
-    def __init__(self, cfg, device_type, device_id, headless):
-        self.projtype = cfg['env']['projtype']
+    def __init__(self, cfg: SkillmimiceEnvCfg, render_mode: str | None = None, **kwargs):
+        self.projtype = cfg.env['projtype']
         
         # Ball Properties
-        self.ball_size = cfg['env']['ballSize']
-        self.ball_restitution = cfg['env']['ballRestitution']
-        self.ball_density = cfg['env']['ballDensity']
+        self.ball_size = cfg.env['ballSize']
+        self.ball_restitution = cfg.env['ballRestitution']
+        self.ball_density = cfg.env['ballDensity']
 
-        super().__init__(cfg=cfg,
+        super().__init__(cfg, **kwargs
+                         #cfg=cfg,
                          #sim_params=sim_params,
                          #physics_engine=physics_engine,
-                         device_type=device_type,
-                         device_id=device_id,
-                         headless=headless)
+                         #device_type=device_type,
+                         #device_id=device_id,
+                         #headless=headless
+                         )
         
         self._build_target_tensors()
 

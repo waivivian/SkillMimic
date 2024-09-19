@@ -10,6 +10,7 @@ import glob, os, random
 #from isaacgym.torch_utils import *
 
 from projects.SkillMimicLab.skillmimic.utils import torch_utils
+from projects.SkillMimicLab.skillmimic.data.cfg.skillmimic_cfg import SkillmimiceEnvCfg
 
 from env.tasks.base_task import BaseTask
 from omni.isaac.lab.assets import Articulation
@@ -21,38 +22,38 @@ PERTURB_OBJS = [
 
 class HumanoidWholeBody(BaseTask):
     #def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
-    def __init__(self, cfg, device_type, device_id, headless):
-        self._enable_task_obs = cfg["env"]["enableTaskObs"]
+    def __init__(self, cfg: SkillmimiceEnvCfg, render_mode: str | None = None, **kwargs):
+        self._enable_task_obs = cfg.env["enableTaskObs"]
 
         self.cfg = cfg
         #self.sim_params = sim_params
         #self.physics_engine = physics_engine
 
-        self._pd_control = self.cfg["env"]["pdControl"]
-        self.power_scale = self.cfg["env"]["powerScale"]
-        self.projtype = cfg['env']['projtype']
+        self._pd_control = self.cfg.env["pdControl"]
+        self.power_scale = self.cfg.env["powerScale"]
+        self.projtype = cfg.env['projtype']
 
-        self.debug_viz = self.cfg["env"]["enableDebugVis"]
-        self.plane_static_friction = self.cfg["env"]["plane"]["staticFriction"]
-        self.plane_dynamic_friction = self.cfg["env"]["plane"]["dynamicFriction"]
-        self.plane_restitution = self.cfg["env"]["plane"]["restitution"]
+        self.debug_viz = self.cfg.env["enableDebugVis"]
+        self.plane_static_friction = self.cfg.env["plane"]["staticFriction"]
+        self.plane_dynamic_friction = self.ccfg.env["plane"]["dynamicFriction"]
+        self.plane_restitution = self.cfg.env["plane"]["restitution"]
 
-        self.max_episode_length = self.cfg["env"]["episodeLength"] #V1
-        self._local_root_obs = self.cfg["env"]["localRootObs"]
-        self._root_height_obs = self.cfg["env"].get("rootHeightObs", True)
-        self._enable_early_termination = self.cfg["env"]["enableEarlyTermination"]
+        self.max_episode_length = self.cfg.env["episodeLength"] #V1
+        self._local_root_obs = self.cfg.env["localRootObs"]
+        self._root_height_obs = self.cfg.env.get("rootHeightObs", True)
+        self._enable_early_termination = self.cfg.env["enableEarlyTermination"]
         
-        key_bodies = self.cfg["env"]["keyBodies"]
+        key_bodies = self.cfg.env["keyBodies"]
         self._setup_character_props(key_bodies)
 
-        self.cfg["env"]["numObservations"] = self.get_obs_size()
-        self.cfg["env"]["numActions"] = self.get_action_size()
+        self.cfg.env["numObservations"] = self.get_obs_size()
+        self.cfg.env["numActions"] = self.get_action_size()
 
-        self.cfg["device_type"] = device_type
-        self.cfg["device_id"] = device_id
-        self.cfg["headless"] = headless
+        #self.cfg["device_type"] = device_type
+        #self.cfg["device_id"] = device_id
+        #self.cfg["headless"] = headless
          
-        super().__init__(cfg=self.cfg)
+        super().__init__(cfg, **kwargs)
         
         self.dt = self.control_freq_inv * sim_params.dt
         
@@ -109,8 +110,8 @@ class HumanoidWholeBody(BaseTask):
         self._build_termination_heights()
         
         self._key_body_ids = self._build_key_body_ids_tensor(key_bodies)
-        self._key_body_wrist_ids = self._build_key_body_ids_tensor(self.cfg["env"]["keyBodiesWrist"])
-        self._contact_body_ids = self._build_contact_body_ids_tensor(self.cfg["env"]["contactBodies"])
+        self._key_body_wrist_ids = self._build_key_body_ids_tensor(self.cfg.env["keyBodiesWrist"])
+        self._contact_body_ids = self._build_contact_body_ids_tensor(self.cfg.env["contactBodies"])
         
         if self.viewer != None:
             self._init_camera()
@@ -119,6 +120,7 @@ class HumanoidWholeBody(BaseTask):
         return
 
     def _setup_character_props(self, key_bodies):
+        '''
         asset_file = self.cfg["env"]["asset"]["assetFileName"]
         num_key_bodies = len(key_bodies)
 
@@ -139,7 +141,7 @@ class HumanoidWholeBody(BaseTask):
         else:
             print("Unsupported character config file: {s}".format(asset_file))
             assert(False)
-
+        '''
         return
     
     def get_obs_size(self):
@@ -170,7 +172,7 @@ class HumanoidWholeBody(BaseTask):
         # add ground plane
         spawn_ground_plane(prim_path="/World/ground", cfg=self.cfg.terrain)
         #self._create_ground_plane()
-        self._create_envs(self.num_envs, self.cfg["env"]['envSpacing'], int(np.sqrt(self.num_envs)))
+        self._create_envs(self.num_envs, self.cfg.env['envSpacing'], int(np.sqrt(self.num_envs)))
         return
 
 
