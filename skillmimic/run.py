@@ -26,12 +26,23 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
+import numpy as np
+import copy
+import torch
 
 import os
 cwd = os.getcwd()
 print(cwd)
 # os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+from learning import skillmimic_agent
+from learning import skillmimic_players
+from learning import skillmimic_models
+from learning import skillmimic_network_builder
+# from learning import physhoi_network_builder_dual #ZC9 #V1
+from learning import hrl_agent_discrete #, hrl_agent, #ZC0
+from learning import hrl_players_discrete #, hrl_players, hrl_players_discrete_llcs
+from learning import hrl_models_discrete #, hrl_models, 
+from learning import hrl_network_builder 
 
 
 # from learning import amp_agent
@@ -55,6 +66,8 @@ from rl_games.common.algo_observer import AlgoObserver
 from rl_games.torch_runner import Runner
 
 def create_rlgpu_env(**kwargs):
+    from projects.SkillMimicLab.skillmimic.utils.parse_task import parse_task
+
     use_horovod = cfg_train['params']['config'].get('multi_gpu', False)
     if use_horovod:
         import horovod.torch as hvd
@@ -71,8 +84,9 @@ def create_rlgpu_env(**kwargs):
         cfg['rank'] = rank
         cfg['rl_device'] = 'cuda:' + str(rank)
 
-    sim_params = parse_sim_params(args, cfg, cfg_train)
-    task, env = parse_task(args, cfg, cfg_train, sim_params)
+    #sim_params = parse_sim_params(args, cfg, cfg_train)
+    #task, env = parse_task(args, cfg, cfg_train, sim_params)
+    task, env = parse_task(args, cfg, cfg_train)
 
     print('num_envs: {:d}'.format(env.num_envs))
     print('num_actions: {:d}'.format(env.num_actions))
@@ -175,7 +189,7 @@ env_configurations.register('rlgpu', {
 
 def build_alg_runner(algo_observer):
     runner = Runner(algo_observer)
-    print("hhhhhhhhhhhhhhhhhhh",runner)
+    print("hhhhhhhhhhhhhhhhhhh",skillmimic_network_builder)
     runner.algo_factory.register_builder('skillmimic', lambda **kwargs : skillmimic_agent.SkillMimicAgent(**kwargs))
     runner.player_factory.register_builder('skillmimic', lambda **kwargs : skillmimic_players.SkillMimicPlayerContinuous(**kwargs))
     runner.model_builder.model_factory.register_builder('skillmimic', lambda network, **kwargs : skillmimic_models.SkillMimicModelContinuous(network))  
@@ -241,25 +255,10 @@ def main():
     global cfg
     global cfg_train
 
-#later just put isacclab under skillmimic
-    from projects.SkillMimicLab.skillmimic.utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
+    #later just put isacclab under skillmimic
+    #from projects.SkillMimicLab.skillmimic.utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
+    from projects.SkillMimicLab.skillmimic.utils.config import set_np_formatting, set_seed, get_args, load_cfg
     from projects.SkillMimicLab.skillmimic.utils.parse_task import parse_task
-
-
-    import numpy as np
-    import copy
-    import torch
-
-    from learning import skillmimic_agent
-    from learning import skillmimic_players
-    from learning import skillmimic_models
-    from learning import skillmimic_network_builder
-    # from learning import physhoi_network_builder_dual #ZC9 #V1
-
-    from learning import hrl_agent_discrete #, hrl_agent, #ZC0
-    from learning import hrl_players_discrete #, hrl_players, hrl_players_discrete_llcs
-    from learning import hrl_models_discrete #, hrl_models, 
-    from learning import hrl_network_builder 
 
     set_np_formatting()
     #args = get_args()

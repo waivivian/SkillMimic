@@ -20,12 +20,13 @@ PERTURB_OBJS = [
 ]
 
 class HumanoidWholeBody(BaseTask):
-    def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
+    #def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
+    def __init__(self, cfg, device_type, device_id, headless):
         self._enable_task_obs = cfg["env"]["enableTaskObs"]
 
         self.cfg = cfg
-        self.sim_params = sim_params
-        self.physics_engine = physics_engine
+        #self.sim_params = sim_params
+        #self.physics_engine = physics_engine
 
         self._pd_control = self.cfg["env"]["pdControl"]
         self.power_scale = self.cfg["env"]["powerScale"]

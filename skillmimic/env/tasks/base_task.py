@@ -22,7 +22,7 @@ import torch
 class BaseTask():
 
     def __init__(self, cfg, enable_camera_sensors=False):
-        self.gym = gymapi.acquire_gym()
+        #self.gym = gymapi.acquire_gym()
 
         self.device_type = cfg.get("device_type", "cuda")
         self.device_id = cfg.get("device_id", 0)
@@ -76,8 +76,9 @@ class BaseTask():
         self.last_rand_step = -1
 
         # create envs, sim and viewer
-        self.create_sim()
-        self.gym.prepare_sim(self.sim)
+        #self.create_sim()
+        self._setup_scene()
+        #self.gym.prepare_sim(self.sim)
 
         # todo: read from config
         self.enable_viewer_sync = True
@@ -115,6 +116,14 @@ class BaseTask():
             return 2
         return 1
 
+    def _setup_scene(self, compute_device, graphics_device, physics_engine, sim_params):
+        #sim = self.gym.create_sim(compute_device, graphics_device, physics_engine, sim_params)
+        if sim is None:
+            print("*** Failed to create sim")
+            quit()
+
+        return sim
+    '''
     def create_sim(self, compute_device, graphics_device, physics_engine, sim_params):
         sim = self.gym.create_sim(compute_device, graphics_device, physics_engine, sim_params)
         if sim is None:
@@ -122,7 +131,7 @@ class BaseTask():
             quit()
 
         return sim
-
+    '''
     def step(self, actions):
         if self.dr_randomizations.get('actions', None):
             actions = self.dr_randomizations['actions']['noise_lambda'](actions)

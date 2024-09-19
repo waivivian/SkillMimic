@@ -22,7 +22,8 @@ PERTURB_PROJECTORS = [
 ]
 
 class HumanoidWholeBodyWithObject(HumanoidWholeBody): #metric
-    def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
+    #def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
+    def __init__(self, cfg, device_type, device_id, headless):
         self.projtype = cfg['env']['projtype']
         
         # Ball Properties
@@ -31,8 +32,8 @@ class HumanoidWholeBodyWithObject(HumanoidWholeBody): #metric
         self.ball_density = cfg['env']['ballDensity']
 
         super().__init__(cfg=cfg,
-                         sim_params=sim_params,
-                         physics_engine=physics_engine,
+                         #sim_params=sim_params,
+                         #physics_engine=physics_engine,
                          device_type=device_type,
                          device_id=device_id,
                          headless=headless)

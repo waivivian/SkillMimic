@@ -17,7 +17,8 @@ from env.tasks.humanoid_object_task import HumanoidWholeBodyWithObject
 
 
 class SkillMimicBallPlay(HumanoidWholeBodyWithObject): 
-    def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
+    #def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
+    def __init__(self, cfg, device_type, device_id, headless):
         state_init = str(cfg["env"]["stateInit"])
         if state_init.lower() == "random":
             self._state_init = -1
@@ -38,8 +39,8 @@ class SkillMimicBallPlay(HumanoidWholeBodyWithObject):
         self.condition_size = 64
 
         super().__init__(cfg=cfg,
-                         sim_params=sim_params,
-                         physics_engine=physics_engine,
+                         #sim_params=sim_params,
+                         #physics_engine=physics_engine,
                          device_type=device_type,
                          device_id=device_id,
                          headless=headless)

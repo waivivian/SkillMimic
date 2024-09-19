@@ -149,7 +149,7 @@ def load_cfg(args):
 
     return cfg, cfg_train, logdir
 
-
+'''
 def parse_sim_params(args, cfg, cfg_train):
     # initialize sim
     sim_params = gymapi.SimParams()
@@ -183,7 +183,7 @@ def parse_sim_params(args, cfg, cfg_train):
         sim_params.physx.num_threads = args.num_threads
 
     return sim_params
-
+'''
 
 def get_args(benchmark=False):
     custom_parameters = [
