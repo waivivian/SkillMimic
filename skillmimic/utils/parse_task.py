@@ -34,6 +34,10 @@ from env.tasks.hrl_heading_easy import HRLHeadingEasy
 from env.tasks.hrl_throwing import HRLThrowing
 from env.tasks.hrl_scoring_layup import HRLScoringLayup
 
+from projects.SkillMimicLab.skillmimic.data.cfg.skillmimic_cfg import SkillmimiceEnvCfg
+from omni.isaac.lab_tasks.utils.parse_cfg import load_cfg_from_registry
+import gymnasium as gym
+import omni.isaac.lab_tasks
 #from isaacgym import rlgpu
 
 import json
@@ -43,7 +47,8 @@ import numpy as np
 def warn_task_name():
     raise Exception(
         "Unrecognized task!\nTask should be one of: [BallBalance, Cartpole, CartpoleYUp, Ant, Humanoid, Anymal, FrankaCabinet, Quadcopter, ShadowHand, ShadowHandLSTM, ShadowHandFFOpenAI, ShadowHandFFOpenAITest, ShadowHandOpenAI, ShadowHandOpenAITest, Ingenuity]")
-
+#https://isaac-sim.github.io/IsaacLab/source/tutorials/03_envs/register_rl_env_gym.html
+#https://github.com/isaac-sim/IsaacLab/blob/a25b994cb4835dc156a5e3d8675b8e88c21b2408/docs/source/how-to/wrap_rl_env.rst#L40
 #def parse_task(args, cfg, cfg_train, sim_params):
 def parse_task(args, cfg, cfg_train):
     import re
@@ -53,10 +58,11 @@ def parse_task(args, cfg, cfg_train):
     #device_id = args.device_id
     rl_device = args.rl_device
 
-    cfg["seed"] = cfg_train.get("seed", -1)
-    cfg_task = cfg["env"]
-    cfg_task["seed"] = cfg["seed"]
+    #cfg["seed"] = cfg_train.get("seed", -1)
+    #cfg_task = cfg["env"]
+    #cfg_task["seed"] = cfg["seed"]
     print("kkkkkkkkkkkkkkkkkkk",args.task)
+    '''
     try:
         task = eval(args.task)( # to HumanoidLocation(), obs defined here! #eval(args.task) = parse args.task to a class
             cfg=cfg,
@@ -68,7 +74,23 @@ def parse_task(args, cfg, cfg_train):
     except NameError as e:
         print(e)
         warn_task_name()
-    #env = VecTaskPythonWrapper(task, rl_device, cfg_train.get("clip_observations", np.inf), cfg_train.get("clip_actions", 1.0))
-    env = DirectRLEnvCfg(SkillmimicCfg, render_mode = None, **kwargs)
+    '''
+    try:
 
+        gym.register(
+            id=args.task+"-Direct",
+            entry_point="projects.SkillMimicLab.skillmimic.env.tasks.skillmimic:"+args.task,
+            disable_env_checker=True,
+            kwargs={
+                "env_entry_point_cfg": SkillmimiceEnvCfg
+            },
+        )   
+        
+        cfg = load_cfg_from_registry(args.task+"-Direct", "env_entry_point_cfg")
+        #env = VecTaskPythonWrapper(task, rl_device, cfg_train.get("clip_observations", np.inf), cfg_train.get("clip_actions", 1.0))
+        #env = DirectRLEnvCfg(SkillmimicCfg, render_mode = None, **kwargs)
+        env = gym.make(args.task+"-Direct", cfg=cfg)
+    except NameError as e:
+        print(e)
+        warn_task_name()
     return task, env

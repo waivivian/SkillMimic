@@ -262,6 +262,7 @@ def main():
 
     set_np_formatting()
     #args = get_args()
+    #cfg, cfg_train, logdir = load_cfg(args)
     cfg, cfg_train, logdir = load_cfg(args)
 
     cfg_train['params']['seed'] = set_seed(cfg_train['params'].get("seed", -1), cfg_train['params'].get("torch_deterministic", False))

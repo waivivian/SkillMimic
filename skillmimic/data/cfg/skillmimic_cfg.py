@@ -1,10 +1,11 @@
 from omni.isaac.lab.envs import DirectRLEnvCfg
 from omni.isaac.lab.scene import InteractiveSceneCfg
-from omni.isaac.lab.sim import SimulationCfg
 from omni.isaac.lab.terrains import TerrainImporterCfg
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import Articulation, ArticulationCfg
-
+from omni.isaac.lab.utils import configclass
+from omni.isaac.lab.sim.simulation_cfg import PhysxCfg, SimulationCfg
+from omni.isaac.lab.actuators import ImplicitActuator, ImplicitActuatorCfg
 @configclass
 class SkillmimiceEnvCfg(DirectRLEnvCfg):
    # env
@@ -18,11 +19,11 @@ class SkillmimiceEnvCfg(DirectRLEnvCfg):
    sim: SimulationCfg = SimulationCfg(
    #device = "cuda:0" # can be "cpu", "cuda", "cuda:<device_id>"
    #dt=1 / 120,
-   # decimation will be set in the task config
+   # decimation will be set in the task configc
    # up axis will always be Z in isaac sim
    # use_gpu_pipeline is deduced from the device
    # gravity=(0.0, 0.0, -9.81),
-   physx: PhysxCfg = PhysxCfg(
+   physx = PhysxCfg(
        # num_threads is no longer needed
        solver_type=1,
        # use_gpu is deduced from the device
